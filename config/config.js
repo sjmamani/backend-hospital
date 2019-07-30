@@ -1,0 +1,1 @@
+module.exports.SEED = "super-secret-key";
