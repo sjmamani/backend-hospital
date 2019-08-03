@@ -18,13 +18,18 @@ app.use(bodyParser.json());
 var appRoutes = require("./routes/app");
 var usuarioRoutes = require("./routes/usuario");
 var loginRoutes = require("./routes/login");
+var hospitalRoutes = require("./routes/hospital");
+var medicoRoutes = require("./routes/medico");
+var busquedaRoutes = require("./routes/busqueda");
+var uploadRoutes = require("./routes/upload.js");
+var imgRoutes = require("./routes/imagenes.js");
 
 // Conexión a la BD
-mongoose.connection.openUri("mongodb://localhost:27017/hospital", (err, res) => {
-
-    if (err) throw err; // Se detiene todo el proceso (servidor)
-
-    console.log("Connection to database succesfully");
+mongoose.connect('mongodb://localhost:27017/hospital', {useNewUrlParser: true});
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log("Connection to database succesfully");
 });
 
 // Levantando el puerto
@@ -34,6 +39,11 @@ app.listen(3000, () => {
 
 
 // Rutas
-app.use("/", appRoutes);
 app.use("/usuarios", usuarioRoutes);
 app.use("/login", loginRoutes);
+app.use("/hospital", hospitalRoutes);
+app.use("/medico", medicoRoutes);
+app.use("/busqueda", busquedaRoutes);
+app.use("/upload", uploadRoutes);
+app.use("/img", imgRoutes);
+app.use("/", appRoutes);

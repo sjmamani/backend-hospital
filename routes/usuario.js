@@ -11,20 +11,31 @@ var Usuario = require("../models/usuario");
  */
 
 app.get("/", (req, res, next) => {
-  Usuario.find({}, "nombre email img role").exec((error, usuarios) => {
-    if (error) {
-      return res.status(500).json({
-        mensaje: "Error en el servidor",
-        ok: false,
-        errors: error
-      });
-    }
 
-    res.status(200).json({
-      usuarios: usuarios,
-      ok: true
+  var desde = req.query.desde;
+  desde = Number(desde); // ==> desde: Number
+
+  Usuario.find({}, "nombre email img role")
+    .skip(desde)
+    .limit(5)
+    .exec((error, usuarios) => {
+      if (error) {
+        return res.status(500).json({
+          mensaje: "Error en el servidor",
+          ok: false,
+          errors: error
+        });
+      }
+
+      Usuario.count({}, (err, cantidad) => {
+        res.status(200).json({
+          usuarios: usuarios,
+          ok: true,
+          total: cantidad
+        });
+      });
+
     });
-  });
 });
 
 /*
